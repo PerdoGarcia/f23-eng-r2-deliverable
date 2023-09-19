@@ -67,7 +67,6 @@ export default function SpeciesCard({ species, userId }: { species: Species; use
   });
 
   const onDelete = async () => {
-    // The `session` logic to get the user's session remains the same as in your `onSubmit` function
     const supabase = createClientComponentClient<Database>();
 
     const { error } = await supabase.from("species").delete().eq("id", species.id);
@@ -338,7 +337,7 @@ export default function SpeciesCard({ species, userId }: { species: Species; use
             <p>Are you sure you want to delete this species?</p>
             <Button
               onClick={() => {
-                onDelete();
+                void onDelete();
               }}
             >
               Yes, Delete
