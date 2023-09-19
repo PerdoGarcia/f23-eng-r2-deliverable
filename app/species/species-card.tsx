@@ -212,7 +212,7 @@ export default function SpeciesCard({ species, userId }: { species: Species; use
                       name="common_name"
                       render={({ field }) => {
                         // We must extract value from field and convert a potential defaultValue of `null` to "" because inputs can't handle null values: https://github.com/orgs/react-hook-form/discussions/4091
-                        const { value, ...rest } = field;
+                        const { value } = field;
                         return (
                           <FormItem>
                             <FormLabel>Common Name</FormLabel>
@@ -328,7 +328,7 @@ export default function SpeciesCard({ species, userId }: { species: Species; use
       </div>
       {/* remove */}
       {species.author == userId && (
-        <Dialog onClick={() => setDeleteOpen(false)} onDismiss={() => setDeleteOpen(false)}>
+        <Dialog onClick={() => setDeleteOpen(false)}>
           <DialogTrigger asChild>
             <Button className="mt-3 w-full">Delete Species</Button>
           </DialogTrigger>
@@ -336,8 +336,7 @@ export default function SpeciesCard({ species, userId }: { species: Species; use
             <p>Are you sure you want to delete this species?</p>
             <Button
               onClick={() => {
-                setDeleteOpen(false);
-                onDelete();
+                onDelete;
               }}
             >
               Yes, Delete
