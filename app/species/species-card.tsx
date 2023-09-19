@@ -22,7 +22,6 @@ import { useState, type BaseSyntheticEvent } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 type Species = Database["public"]["Tables"]["species"]["Row"];
-
 const kingdoms = z.enum(["Animalia", "Plantae", "Fungi", "Protista", "Archaea", "Bacteria"]);
 
 const speciesSchema = z.object({
@@ -54,6 +53,7 @@ type FormData = z.infer<typeof speciesSchema>;
 const defaultValues: Partial<FormData> = {
   kingdom: "Animalia",
 };
+
 export default function SpeciesCard({ species, userId }: { species: Species; userId: string }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -92,21 +92,28 @@ export default function SpeciesCard({ species, userId }: { species: Species; use
       data: { session },
     } = await supabase.auth.getSession();
 
-    const { error } = await supabase
-      .from("species")
-      .update([
-        {
-          author: userId,
-          common_name: input.common_name,
-          description: input.description,
-          kingdom: input.kingdom,
-          scientific_name: input.scientific_name,
-          total_population: input.total_population,
-          image: input.image,
-        },
-      ])
-      .eq("id", species.id)
-      .eq("author", session.user.id);
+    const updateData = [
+      {
+        id: species.id,
+        author: userId,
+        common_name: input.common_name || null,
+        description: input.description || null,
+        kingdom: input.kingdom || "",
+        scientific_name: input.scientific_name,
+        total_population: input.total_population ?? null,
+        image: input.image || null,
+      },
+    ] as {
+      author?: string; // Make 'author' property optional
+      common_name?: string | null; // Keep 'common_name' property optional
+      description?: string | null; // Keep 'description' property optional
+      kingdom?: "Animalia" | "Plantae" | "Fungi" | "Protista" | "Archaea" | "Bacteria"; // Keep 'kingdom' property required
+      scientific_name?: string; // Keep 'scientific_name' property required
+      total_population?: number | null; // Make 'total_population' property optional
+      image?: string | null; // Make 'image' property optional
+    };
+
+    const { error } = await supabase.from("species").update(updateData).eq("id", species.id).eq("author", userId);
 
     if (error) {
       return toast({
@@ -264,7 +271,7 @@ export default function SpeciesCard({ species, userId }: { species: Species; use
                             {/* Using shadcn/ui form with number: https://github.com/shadcn-ui/ui/issues/421 */}
                             <Input
                               type="number"
-                              placeholder={species.total_population}
+                              placeholder={String(species.total_population)}
                               onChange={(event) => field.onChange(+event.target.value)}
                             />
                           </FormControl>
