@@ -328,15 +328,17 @@ export default function SpeciesCard({ species, userId }: { species: Species; use
       </div>
       {/* remove */}
       {species.author == userId && (
-        <Dialog onClick={() => setDeleteOpen(false)}>
+        <Dialog>
           <DialogTrigger asChild>
-            <Button className="mt-3 w-full">Delete Species</Button>
+            <Button className="mt-3 w-full" onClick={() => setDeleteOpen(false)}>
+              Delete Species
+            </Button>
           </DialogTrigger>
           <DialogContent>
             <p>Are you sure you want to delete this species?</p>
             <Button
               onClick={() => {
-                onDelete;
+                onDelete();
               }}
             >
               Yes, Delete
