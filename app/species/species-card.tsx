@@ -58,7 +58,7 @@ export default function SpeciesCard({ species, userId }: { species: Species; use
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
-  const [isDeleteOpen, setDeleteOpen] = useState(false);
+  const [, setDeleteOpen] = useState(false);
 
   const form = useForm<FormData>({
     resolver: zodResolver(speciesSchema),
@@ -88,20 +88,17 @@ export default function SpeciesCard({ species, userId }: { species: Species; use
   const onSubmit = async (input: FormData) => {
     // The `input` prop contains data that has already been processed by zod. We can now use it in a supabase query
     const supabase = createClientComponentClient<Database>();
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
 
     const updateData = [
       {
         id: species.id,
         author: userId,
-        common_name: input.common_name || null,
-        description: input.description || null,
+        common_name: input.common_name ?? null,
+        description: input.description ?? null,
         kingdom: input.kingdom || "",
         scientific_name: input.scientific_name,
         total_population: input.total_population ?? null,
-        image: input.image || null,
+        image: input.image ?? null,
       },
     ] as {
       author?: string; // Make 'author' property optional
@@ -222,7 +219,7 @@ export default function SpeciesCard({ species, userId }: { species: Species; use
                             <FormControl>
                               <Input
                                 value={value ?? ""}
-                                placeholder={species.common_name}
+                                placeholder={species.common_name ?? ""}
                                 onChange={(event) => field.onChange(event.target.value)}
                               />
                             </FormControl>
@@ -286,7 +283,7 @@ export default function SpeciesCard({ species, userId }: { species: Species; use
                         <FormItem>
                           <FormLabel>Image URL</FormLabel>
                           <FormControl>
-                            <Input placeholder={species.image} {...field} />
+                            <Input placeholder={species.image ?? ""} {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -302,7 +299,7 @@ export default function SpeciesCard({ species, userId }: { species: Species; use
                           <FormItem>
                             <FormLabel>Description</FormLabel>
                             <FormControl>
-                              <Textarea value={value ?? ""} placeholder={species.description} {...rest} />
+                              <Textarea value={value ?? ""} placeholder={species.description ?? ""} {...rest} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
