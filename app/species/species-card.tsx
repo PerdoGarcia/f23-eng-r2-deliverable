@@ -80,13 +80,6 @@ export default function SpeciesCard({ species, userId }: { species: Species; use
       });
     }
 
-    // Optionally, you can add a toast message to indicate successful deletion
-    toast({
-      title: "Species Deleted",
-      description: "The species has been successfully deleted.",
-      variant: "success",
-    });
-
     form.reset();
     setDeleteOpen(false);
     router.refresh();
